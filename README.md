@@ -4,9 +4,9 @@
 This document illustrates how to obtain the results shown in the paper "Uncertainty-Aware Robust Adaptive Video Streaming with Bayesian Neural Network and Model Predictive Control" which is also enclosed in the attachments. Following the instructions detailed below, the results in Figures 2, 3, 4, 5, 6 can be replicated. _Note that the badge we want to apply is the Results Replicated badge._
 
 ## The comparison algorithms
-There are 5 baseline algorithms for comparison, which were detailed in Section 3.1.3 in the paper. 
+There are 6 baseline algorithms for comparison, which were detailed in Section 3.1.3 in the paper. 
 
-These baseline algorithms correspond to 5 execution files in the "source codes'':
+These baseline algorithms correspond to 6 execution files in the "source codes'':
 1. Rate-based: `rb.py`
 2. Buffer-based: `bb.py`
 3. BOLA: `Bola_v1.py`
