@@ -1,16 +1,7 @@
+import argparse
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-
-
-RESULTS_FOLDER = './results_lin/HSDPA/'
-# RESULTS_FOLDER = './results_lin/fcc/'
-# RESULTS_FOLDER = './results_lin/Oboe/'
-
-# RESULTS_FOLDER = './results_log/HSDPA/'
-# RESULTS_FOLDER = './results_log/fcc/'
-# RESULTS_FOLDER = './results_log/Oboe/'
-
 
 NUM_BINS = 100
 BITS_IN_BYTE = 8.0 
@@ -35,6 +26,13 @@ SCHEMES_NAME = ['BayesMPC', 'Buffer-based', 'Pensieve', 'Rate-based', 'RobustMPC
 COLOR_CDF = ['r', '#800080', 'c', '', '', '']
 LINE_STY = ['-', ':', '--', '-.', ':', '-.', '-.', '-'] # style set of the lines of figure
 HATCH = ['', '/', '+', '\\', '//', '-', 'x']
+
+parser = argparse.ArgumentParser(description='Plot_figure34')
+parser.add_argument('--lin', action='store_true', help='QoE_lin metric')
+parser.add_argument('--log', action='store_true', help='QoE_log metric')
+parser.add_argument('--FCC', action='store_true', help='Test in FCC dataset')
+parser.add_argument('--HSDPA', action='store_true', help='Test in HSDPA dataset')
+parser.add_argument('--Oboe', action='store_true', help='Test in Oboe dataset')
 
 def Plot_Bar(Plot_value, Y_Label, X_Label, Legend, Legend_column, intra_width = 0.1, intra_interval = 0, inter_width = 0.2, Y_bottom = 0, X_right = 0): # plot a bar, the Plot_value should be a dictionary, the 'Y_Lable' should be a string, the 'X_Label' and 'Legend' should be both a list of strings, 'Legend_column' is the column numbers of the legend, 'intra_width' is the width of a bar on the x-axis, 'intra_interval' is the width of interval of bars on the x-axis in a same term, 'inter_width' is the distance of different terms on the x-axis, 'Y_bottom' is the start value of y-axis
     fig = plt.figure()
@@ -75,6 +73,27 @@ def Plot_Bar(Plot_value, Y_Label, X_Label, Legend, Legend_column, intra_width = 
     plt.show()	
 
 def main():
+	args = parser.parse_args()
+	if args.lin:
+		qoe_metric = 'results_lin'
+		qoe_name = '$QoE_{lin}$'
+	elif args.log:
+		qoe_metric = 'results_log'
+		qoe_name = '$QoE_{log}$'
+	else:
+		print('Please select the QoE Metric!')
+    
+	if args.FCC:
+		dataset = 'fcc'
+	elif args.HSDPA:
+		dataset = 'HSDPA'
+	elif args.Oboe:
+		dataset = 'Oboe'
+	else:
+		print('Please select the dataset!')
+    
+	results_folder = './' + qoe_metric + '/' + dataset + '/'
+	
 	time_all = {}
 	bit_rate_all = {}
 	quality_all = {}
@@ -99,7 +118,7 @@ def main():
 		# bw_robust_all[scheme] = {}
 		# bw_true_all[scheme] = {}
 
-	log_files = os.listdir(RESULTS_FOLDER)
+	log_files = os.listdir(results_folder)
 	for log_file in log_files:
 
 		time_ms = []
@@ -115,7 +134,7 @@ def main():
 
 		print(log_file)
 
-		with open(RESULTS_FOLDER + log_file, 'rb') as f:
+		with open(results_folder + log_file, 'rb') as f:
 			if SIM_DP in log_file:
 				last_t = 0
 				last_b = 0
@@ -341,7 +360,6 @@ def main():
 
     # plt.ylabel('CDF', fontsize = 16)
     # plt.xlabel("Average Values of Chunk's QoE", fontsize = 16)
-    # # cdf_m.set_xlabel(u'时间切片的QoE平均�?, fontproperties=font)
     # plt.xticks(fontsize = 14)
     # plt.yticks(fontsize = 14)
     # plt.xlim([0.930,0.994])
@@ -371,7 +389,7 @@ def main():
 	frame.set_alpha(0)
 	frame.set_facecolor('none')
 	plt.ylabel('CDF (Perc. of sessions)', fontsize = 20)
-	plt.xlabel("Average Values of Chunk's $QoE_{log}$", fontsize = 18)
+	plt.xlabel("Average Values of Chunk's " +  qoe_name, fontsize = 18)
 	plt.xticks(fontsize = 16)
 	plt.yticks(fontsize = 16)
 	# plt.xlim([0.930,0.994])
@@ -379,7 +397,7 @@ def main():
 	ax.spines['right'].set_visible(False)
 	ax.spines['bottom'].set_linewidth(2.5)
 	ax.spines['left'].set_linewidth(2.5)
-	plt.title('HSDPA') # HSDPA , FCC , Oboe
+	plt.title(dataset) # HSDPA , FCC , Oboe
 	# plt.grid()
 	plt.show()
 

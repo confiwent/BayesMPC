@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import fixed_env as env
 import load_trace
@@ -23,19 +24,17 @@ SMOOTH_PENALTY = 1
 DEFAULT_QUALITY = 1  # default video quality without agent
 RANDOM_SEED = 42
 RAND_RANGE = 1000000
-
-# QOE_METRIC = 'results_lin' # QoE_lin
-QOE_METRIC = 'results_log' # QoE_log
-# DATASET  = 'HSDPA' # HSDPA
-DATASET  = 'fcc' # HSDPA
-
-DATA_SET_PATH = './traces_' + DATASET + '/'
-SUMMARY_DIR = './' + QOE_METRIC + '/' + DATASET
-LOG_FILE = './' + QOE_METRIC + '/' + DATASET + '/log_sim_mpc'
 VIDEO_SIZE_FILE = './video_size/ori/video_size_' 
 # log in format of time_stamp bit_rate buffer_size rebuffer_time chunk_size download_time reward
 # NN_MODEL = './models/nn_model_ep_5900.ckpt'
 
+parser = argparse.ArgumentParser(description='RobustMPC')
+parser.add_argument('--lin', action='store_true', help='QoE_lin metric')
+parser.add_argument('--log', action='store_true', help='QoE_log metric')
+parser.add_argument('--FCC', action='store_true', help='Test in FCC dataset')
+parser.add_argument('--HSDPA', action='store_true', help='Test in HSDPA dataset')
+parser.add_argument('--Oboe', action='store_true', help='Test in Oboe dataset')
+parser.add_argument('--cb', action='store_true', help='Compare the lower bound')
 
 # past errors in bandwidth
 past_errors = []
@@ -46,7 +45,7 @@ class video_size(object):
         self.video_sizes = {}
 
     def store_size(self):
-        for bitrate in xrange(A_DIM):
+        for bitrate in range(A_DIM):
             self.video_sizes[bitrate] = []
             with open(VIDEO_SIZE_FILE + str(bitrate)) as f:
                 for line in f:
@@ -61,6 +60,28 @@ class video_size(object):
 
 
 def main():
+    args = parser.parse_args()
+    if args.cb or args.lin:
+        qoe_metric = 'results_lin'
+    elif args.log:
+        qoe_metric = 'results_log'
+    else:
+        print('Please select the QoE Metric!')
+    
+    if args.FCC:
+        dataset = 'fcc'
+    elif args.HSDPA:
+        dataset = 'HSDPA'
+    elif args.Oboe:
+        dataset = 'Oboe'
+    else:
+        print('Please select the dataset!')
+    
+    dataset_path = './traces_' + dataset + '/'
+    if args.cb:
+        Log_file_path = './' + qoe_metric + '/cb_' + dataset + '/log_sim_mpc'
+    else:
+        Log_file_path = './' + qoe_metric + '/' + dataset + '/log_sim_mpc'
     
     start = time.time()
 
@@ -68,12 +89,12 @@ def main():
 
     assert len(VIDEO_BIT_RATE) == A_DIM
 
-    all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(DATA_SET_PATH)
+    all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(dataset_path)
 
     net_env = env.Environment(all_cooked_time=all_cooked_time,
                               all_cooked_bw=all_cooked_bw)
 
-    log_path = LOG_FILE + '_' + all_file_names[net_env.trace_idx]
+    log_path = Log_file_path + '_' + all_file_names[net_env.trace_idx]
     log_file = open(log_path, 'wb')
 
     chunk_size_info = video_size()
@@ -107,7 +128,7 @@ def main():
         time_stamp += sleep_time  # in ms
 
         # reward is video quality - rebuffer penalty
-        if QOE_METRIC == 'results_lin':
+        if qoe_metric == 'results_lin':
             REBUF_PENALTY = 4.3
             reward = VIDEO_BIT_RATE[bit_rate] / M_IN_K \
                     - REBUF_PENALTY * rebuf \
@@ -340,7 +361,7 @@ def main():
             a_batch.append(action_vec)
             entropy_record = []
 
-            print "video count", video_count
+            print("video count", video_count)
             video_count += 1
 
             if video_count >= len(all_file_names):
@@ -348,7 +369,7 @@ def main():
                 print(end - start)
                 break
 
-            log_path = LOG_FILE + '_' + all_file_names[net_env.trace_idx]
+            log_path = Log_file_path + '_' + all_file_names[net_env.trace_idx]
             log_file = open(log_path, 'wb')
 
             end = time.time()

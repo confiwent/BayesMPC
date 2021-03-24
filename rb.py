@@ -1,5 +1,6 @@
 '''without prior knowledge of future bandwidth'''
 
+import argparse
 import pdb
 import numpy as np
 import fixed_env as env
@@ -21,35 +22,51 @@ RANDOM_SEED = 42
 RAND_RANGE = 1000
 # TEST_TRACES = './traces_oboe/'
 
-QOE_METRIC = 'results_lin' # QoE_lin
-# QOE_METRIC = 'results_log' # QoE_log
-# DATASET  = 'HSDPA' # HSDPA
-DATASET  = 'fcc' # HSDPA
-
-DATA_SET_PATH = './traces_' + DATASET + '/'
-SUMMARY_DIR = './' + QOE_METRIC + '/' + DATASET
-LOG_FILE = './' + QOE_METRIC + '/' + DATASET + '/log_sim_rb'
-
+parser = argparse.ArgumentParser(description='Rate-based')
+parser.add_argument('--lin', action='store_true', help='QoE_lin metric')
+parser.add_argument('--log', action='store_true', help='QoE_log metric')
+parser.add_argument('--FCC', action='store_true', help='Test in FCC dataset')
+parser.add_argument('--HSDPA', action='store_true', help='Test in HSDPA dataset')
+parser.add_argument('--Oboe', action='store_true', help='Test in Oboe dataset')
 
 # past errors in bandwidth
 past_errors = []
 past_bandwidth_ests = []
 
 def main():
+    args = parser.parse_args()
+    if args.lin:
+        qoe_metric = 'results_lin'
+    elif args.log:
+        qoe_metric = 'results_log'
+    else:
+        print('Please select the QoE Metric!')
+    
+    if args.FCC:
+        dataset = 'fcc'
+    elif args.HSDPA:
+        dataset = 'HSDPA'
+    elif args.Oboe:
+        dataset = 'Oboe'
+    else:
+        print('Please select the dataset!')
+    
+    dataset_path = './traces_' + dataset + '/'
+    Log_file_path = './' + qoe_metric + '/' + dataset + '/log_sim_rb'
 
     np.random.seed(RANDOM_SEED)
 
-    if not os.path.exists(SUMMARY_DIR):
-        os.makedirs(SUMMARY_DIR)
+    # if not os.path.exists(SUMMARY_DIR):
+    #     os.makedirs(SUMMARY_DIR)
 
-    all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(DATA_SET_PATH)
+    all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(dataset_path)
     past_bandwidths = np.zeros(6)
     opt_ptr = 0
 
     net_env = env.Environment(all_cooked_time=all_cooked_time,
                               all_cooked_bw=all_cooked_bw)
 
-    log_path = LOG_FILE + '_' + all_file_names[net_env.trace_idx]
+    log_path = Log_file_path + '_' + all_file_names[net_env.trace_idx]
     log_file = open(log_path, 'wb')
 
     time_stamp = 0
@@ -117,7 +134,7 @@ def main():
         time_stamp += sleep_time  # in ms
 
         # reward is video quality - rebuffer penalty
-        if QOE_METRIC == 'results_lin':
+        if qoe_metric == 'results_lin':
             REBUF_PENALTY = 4.3
             reward = VIDEO_BIT_RATE[bit_rate] / M_IN_K \
                     - REBUF_PENALTY * rebuf \
@@ -199,7 +216,7 @@ def main():
             if video_count >= len(all_file_names):
                 break
 
-            log_path = LOG_FILE + '_' + all_file_names[net_env.trace_idx]
+            log_path = Log_file_path + '_' + all_file_names[net_env.trace_idx]
             log_file = open(log_path, 'wb')
 
 

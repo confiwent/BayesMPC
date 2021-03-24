@@ -2,8 +2,8 @@ import os
 
 
 # COOKED_TRACE_FOLDER = './test/'
-COOKED_TRACE_FOLDER = './traces_norway/'
-# COOKED_TRACE_FOLDER = './traces_fcc/'
+# COOKED_TRACE_FOLDER = './traces_norway/'
+COOKED_TRACE_FOLDER = './traces_fcc/'
 # COOKED_TRACE_FOLDER = './traces_oboe/'
 
 

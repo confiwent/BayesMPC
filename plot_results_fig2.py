@@ -1,20 +1,8 @@
+import argparse
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# RESULTS_FOLDER = './results_backup/traces_02/'
-# RESULTS_FOLDER = './results/fcc/'
-# RESULTS_FOLDER = './results_lin/fcc/'
-# RESULTS_FOLDER = './results/true_belgium/'
-# RESULTS_FOLDER = './results/test/'
-# RESULTS_FOLDER = './results/unfair_kx/'
-# RESULTS_FOLDER = './results/unfair_kx/'
-# RESULTS_FOLDER = './results_lin/oboe/'
-# RESULTS_FOLDER = './results/norway/'
-# RESULTS_FOLDER = './results_lin/model_com/'
-# RESULTS_FOLDER = './results_lin/test/'
-RESULTS_FOLDER = './results_lin/trace_bw_com/'
 NUM_BINS = 100
 BITS_IN_BYTE = 8.0 
 MILLISEC_IN_SEC = 1000.0
@@ -40,6 +28,10 @@ SCHEMES_NAME = ['BayesMPC', 'RobustMPC'] # , 'OurProposed-PNN'
 COLOR_CDF = ['r', '#800080', 'c', '', '', '']
 LINE_STY = ['-', ':', '--', '-.', ':', '-.', '-.', '-'] # style set of the lines of figure
 HATCH = ['', '/', '+', '\\', '//', '-', 'x']
+
+parser = argparse.ArgumentParser(description='Plot_figure2')
+parser.add_argument('--a', action='store_true', help='Test in FCC dataset')
+parser.add_argument('--b', action='store_true', help='Test in HSDPA dataset')
 
 def Plot_Bar(Plot_value, Y_Label, X_Label, Legend, Legend_column, intra_width = 0.1, intra_interval = 0, inter_width = 0.2, Y_bottom = 0, X_right = 0): # plot a bar, the Plot_value should be a dictionary, the 'Y_Lable' should be a string, the 'X_Label' and 'Legend' should be both a list of strings, 'Legend_column' is the column numbers of the legend, 'intra_width' is the width of a bar on the x-axis, 'intra_interval' is the width of interval of bars on the x-axis in a same term, 'inter_width' is the distance of different terms on the x-axis, 'Y_bottom' is the start value of y-axis
     fig = plt.figure()
@@ -80,6 +72,14 @@ def Plot_Bar(Plot_value, Y_Label, X_Label, Legend, Legend_column, intra_width = 
     plt.show()	
 
 def main():
+	args = parser.parse_args()
+	if args.a:
+		results_folder = './results_lin/cb_HSDPA/'
+	elif args.b: 
+		results_folder = './results_lin/cb_fcc/'
+	else:
+		print('Please select the figure to be plotted!')
+
 	time_all = {}
 	bit_rate_all = {}
 	quality_all = {}
@@ -105,7 +105,7 @@ def main():
 		bw_upper_all[scheme] = {}
 		bw_true_all[scheme] = {}
 
-	log_files = os.listdir(RESULTS_FOLDER)
+	log_files = os.listdir(results_folder)
 	for log_file in log_files:
 
 		time_ms = []
@@ -122,7 +122,7 @@ def main():
 
 		print(log_file)
 
-		with open(RESULTS_FOLDER + log_file, 'rb') as f:
+		with open(results_folder + log_file, 'rb') as f:
 			if SIM_DP in log_file:
 				last_t = 0
 				last_b = 0
@@ -335,7 +335,6 @@ def main():
 
     # # plt.ylabel('CDF', fontsize = 16)
     # # plt.xlabel("Average Values of Chunk's QoE", fontsize = 16)
-    # # # cdf_m.set_xlabel(u'时间切片的QoE平均?, fontproperties=font)
     # # plt.xticks(fontsize = 14)
     # # plt.yticks(fontsize = 14)
     # # plt.xlim([0.930,0.994])
