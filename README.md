@@ -6,29 +6,90 @@ This document illustrates how to obtain the results shown in the paper "Uncertai
 ## The comparison algorithms
 There are 5 baseline algorithms for comparison, which were detailed in Section 3.1.3 in the paper. 
 
-These baselines correspond to 5 execution files in the "source codes'':
+These baseline algorithms correspond to 5 execution files in the "source codes'':
 1. Rate-based: `rb.py`
 2. Buffer-based: `bb.py`
 3. BOLA: `Bola_v1.py`
 4. RobustMPC: `mpc_v2.py`
 5. Pensieve: `rl_no_training.py`
-6. Our proposed algorithm-__BayesMPC__: `bbp_mpc_v3.py`
+6. Our proposed algorithm-_BayesMPC_: `bbp_mpc_v3.py`
 
 ## The environment setup
 To run the codes, some softwares and packages should be installed for replicating the results successfully. In addition, it is suggested to run the codes with Ubuntu 16.04/18.04.
 
 ### Intall anaconda to manage the test environments.
 - Download the anaconda installers from the [official website](https://www.anaconda.com/products/individual#Downloads), generally choose the 64-Bit (x86) Installer.
-- Install anaconda.
+- Open Terminal, install anaconda
 
+    ```
     cd Downloads
     bash Anaconda3-2020.11-Linux-x86_64.sh
+    ```
+- Type `yes` when there are questions in the installation procedure.
+- Update `.bashrc`
 
-__Note that the codes of Pensieve was implemented with python2.7, and tensorflow (version = 1.11.0), and BayesMPC should run in python3.6 with pytorch (version = 1.6.0). Therefore, we suggest the reviewer to run the codes in Ubuntu and use the software "anaconda'' to manage the environments.__ For example, we can create an environment (env1) for Pensieve and another environment (env2) for BayesMPC and other baselines.
+    ```
+    source ~/.bashrc
+    ```
 
-In addition, several dependent packages should be installed:
-- For Pensieve \emph(env1): packages `numpy', `pandas', `matplotlib' and `tflearn' should be installed in order to run the codes. For example, you can install `numpy' by ``conda install numpy'' or ``pip install numpy'', and install `tflearn' by `pip install tflearn$==0.3.2$'. Note that it is better to install `tflearn' with the version $==0.3.2$.
-- For BayesMPC and other baselines \emph(env2): packages `numpy', `pandas', `matplotlib' also should be installed. 
+- Type `python` in Terminal, the installation is successful if the Anaconda logo shows in the terminal.
+
+### Intall prerequisities for _BayesMPC_
+The _BayesMPC_ should be tested with python 3.6, pytorch 1.6.0, numpy, matplotlib, and pandas.
+- Create a new virtual environment named _bayes_ for testing _BayesMPC_
+
+    ```
+    conda create --name bayes python=3.6
+    ```
+- Activate the virtual environment and intall the packages in it.
+
+    ```
+    conda activate bayes
+    conda install -n bayes numpy pandas matplotlib
+    ```
+- Install PyTorch. Note that the command of PyTorch intallation depends on the actual compute platform of your own computer, and you can choose appropriate version following the [guide page](https://pytorch.org/get-started/locally/). For example, if you have intalled `CUDA 10.2`, you can intall PyTorch with the latest version by running this Command:
+
+    ```
+    conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
+    ```
+
+- You can deactivate the current virtual environment by running
+
+    ```
+    conda deactivate
+    ```
+
+### Intall prerequisities for pensieve
+The pensieve should be tested with python 2.7, Tensorflow (version <= 1.11.0), TFLearn (version <= 0.3.2), numpy, matplotlib, and pandas.
+- Create a new virtual environment named _pensieve_ for testing Pensieve
+
+    ```
+    conda create --name pensieve python=2.7
+    ```
+- Activate the virtual environment and intall the packages in it.
+
+    ```
+    conda activate pensieve
+    conda install -n bayes numpy pandas matplotlib
+    ```
+- Install Tensorflow.
+
+    ```
+    conda install tensorflow==1.11.0
+    ```
+- Install TFLearn.
+
+    ```
+    pip install tflearn==0.3.2
+    ```
+- You can deactivate the current virtual environment by running
+
+    ```
+    conda deactivate
+    ```
+
+### Intall prerequisities for other baseline algorithms
+The other baseline algorithms can be tested __both__ in _bayes_ or _pensieve_.
 
 ## Evaluation
 ### Results of Fig.2
