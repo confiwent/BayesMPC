@@ -59,8 +59,8 @@ The _BayesMPC_ should be tested with python 3.6, pytorch 1.6.0, numpy, matplotli
     conda deactivate
     ```
 
-### Intall prerequisities for pensieve
-The pensieve should be tested with python 2.7, Tensorflow (version <= 1.11.0), TFLearn (version <= 0.3.2), numpy, matplotlib, and pandas.
+### Intall prerequisities for Pensieve
+The Pensieve should be tested with python 2.7, Tensorflow (version <= 1.11.0), TFLearn (version <= 0.3.2), numpy, matplotlib, and pandas.
 - Create a new virtual environment named _pensieve_ for testing Pensieve
 
     ```
@@ -89,14 +89,16 @@ The pensieve should be tested with python 2.7, Tensorflow (version <= 1.11.0), T
     ```
 
 ### Intall prerequisities for other baseline algorithms
-The other baseline algorithms can be tested __both__ in _bayes_ or _pensieve_.
+The other baseline algorithms can be tested _pensieve_.
 
 ## Evaluation
 ### Results of Fig.2
-To plot the results in Figure 2, you should follow the steps below:
+To replicate the results in Fig.2, you should follow the steps below:
 1. create a folder named ``trace_bw_com'' in the folder ``results_lin''
 2. copy the results of BayesMPC and RobustMPC in the folders ``results_lin/fcc'' and ``results_lin/HSDPA'' into the folder ``trace_bw_com''
 3. plot the results by running ``python plot_results_fig2.py'' in the Terminal.
+
+![fig2a](./pic/random_traces_prediction_norway.pdf)
 
 ### Results of Figs. 3, 4, 5
 The operations for replicating the results shown in Figures 3, 4, 5 in Section.3 of the paper are similar. You can obtain the results by following steps:
