@@ -70,7 +70,7 @@ The Pensieve should be tested with python 2.7, Tensorflow (version <= 1.11.0), T
 
     ```
     conda activate pensieve
-    conda install -n bayes numpy pandas matplotlib
+    conda install -n pensieve numpy pandas matplotlib
     ```
 - Install Tensorflow.
 
