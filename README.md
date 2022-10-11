@@ -1,5 +1,7 @@
 # Artifact Appendix for (Paper ID: 10) Uncertainty-Aware Robust Adaptive Video Streaming with Bayesian Neural Network and Model Predictive Control
 
+Link for the work published on ACM [MM22](https://github.com/confiwent/merina)
+
 ## Abstract
 This document illustrates how to obtain the results shown in the paper "Uncertainty-Aware Robust Adaptive Video Streaming with Bayesian Neural Network and Model Predictive Control" which is also enclosed in the attachments. Following the instructions detailed below, the results in Figures 2, 3, 4, 5, 6 can be replicated.
 ## The comparison algorithms
